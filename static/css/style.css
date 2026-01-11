@@ -1,4 +1,4 @@
-/* Neumorphism Login Form - Complete & Self-Contained */
+/* Neumorphism Password Strength Checker - Complete & Fixed */
 
 * {
     margin: 0;
@@ -173,9 +173,9 @@ body {
     color: #6c7293;
 }
 
-/* Password Toggle */
+/* Password Toggle - FIXED */
 .password-group {
-    padding-right: 50px;
+    padding-right: 60px;
 }
 
 .neu-toggle {
@@ -185,8 +185,8 @@ body {
     transform: translateY(-50%);
     background: #e0e5ec;
     border: none;
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -209,101 +209,16 @@ body {
         inset -2px -2px 5px #ffffff;
 }
 
-.neu-toggle svg {
-    position: absolute;
+.toggle-icon {
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
 }
 
-.eye-closed {
-    display: none;
-}
-
-.neu-toggle.show-password .eye-open {
-    display: none;
-}
-
-.neu-toggle.show-password .eye-closed {
-    display: block;
-}
-
-/* Form Options */
-.form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 35px;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.remember-wrapper {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.remember-wrapper input[type="checkbox"] {
-    display: none;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    user-select: none;
-    color: #6c7293;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.neu-checkbox {
-    width: 22px;
-    height: 22px;
-    background: #e0e5ec;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 
-        3px 3px 8px #bec3cf,
-        -3px -3px 8px #ffffff;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.remember-wrapper input[type="checkbox"]:checked + .checkbox-label .neu-checkbox {
-    box-shadow: 
-        inset 2px 2px 5px #bec3cf,
-        inset -2px -2px 5px #ffffff;
-}
-
-.neu-checkbox svg {
-    width: 14px;
-    height: 14px;
-    color: #00c896;
-    opacity: 0;
-    transform: scale(0);
-    transition: all 0.3s ease;
-}
-
-.remember-wrapper input[type="checkbox"]:checked + .checkbox-label .neu-checkbox svg {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.forgot-link {
-    color: #6c7293;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.forgot-link:hover {
-    color: #3d4468;
+.toggle-icon path,
+.toggle-icon circle,
+.toggle-icon line {
+    vector-effect: non-scaling-stroke;
 }
 
 /* Neumorphic Button */
@@ -392,93 +307,6 @@ body {
     opacity: 1;
 }
 
-/* Divider */
-.divider {
-    display: flex;
-    align-items: center;
-    margin: 30px 0;
-    gap: 16px;
-}
-
-.divider-line {
-    flex: 1;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #bec3cf, transparent);
-}
-
-.divider span {
-    color: #9499b7;
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Social Login */
-.social-login {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 30px;
-}
-
-.neu-social {
-    width: 50px;
-    height: 50px;
-    background: #e0e5ec;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c7293;
-    box-shadow: 
-        6px 6px 15px #bec3cf,
-        -6px -6px 15px #ffffff;
-    transition: all 0.3s ease;
-}
-
-.neu-social:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-        8px 8px 20px #bec3cf,
-        -8px -8px 20px #ffffff;
-}
-
-.neu-social:active {
-    transform: translateY(0);
-    box-shadow: 
-        inset 3px 3px 8px #bec3cf,
-        inset -3px -3px 8px #ffffff;
-}
-
-.neu-social svg {
-    width: 22px;
-    height: 22px;
-}
-
-/* Signup Link */
-.signup-link {
-    text-align: center;
-}
-
-.signup-link p {
-    color: #9499b7;
-    font-size: 14px;
-}
-
-.signup-link a {
-    color: #6c7293;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-.signup-link a:hover {
-    color: #3d4468;
-}
-
 /* Error States */
 .error-message {
     color: #ff3b5c;
@@ -558,11 +386,5 @@ body {
     
     .neu-input label {
         left: 50px;
-    }
-    
-    .form-options {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
     }
 }

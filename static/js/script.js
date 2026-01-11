@@ -1,13 +1,11 @@
-// Neumorphism Login Form JavaScript
+// Neumorphism Password Strength Checker - Fixed JavaScript
 class NeumorphismLoginForm {
     constructor() {
         this.form = document.getElementById('loginForm');
-        this.emailInput = document.getElementById('email');
         this.passwordInput = document.getElementById('password');
         this.passwordToggle = document.getElementById('passwordToggle');
         this.submitButton = this.form.querySelector('.login-btn');
         this.successMessage = document.getElementById('successMessage');
-        this.socialButtons = document.querySelectorAll('.neu-social');
         
         this.init();
     }
@@ -15,56 +13,49 @@ class NeumorphismLoginForm {
     init() {
         this.bindEvents();
         this.setupPasswordToggle();
-        this.setupSocialButtons();
         this.setupNeumorphicEffects();
     }
     
     bindEvents() {
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-        this.emailInput.addEventListener('blur', () => this.validateEmail());
         this.passwordInput.addEventListener('blur', () => this.validatePassword());
-        this.emailInput.addEventListener('input', () => this.clearError('email'));
         this.passwordInput.addEventListener('input', () => this.clearError('password'));
         
         // Add soft press effects to inputs
-        [this.emailInput, this.passwordInput].forEach(input => {
-            input.addEventListener('focus', (e) => this.addSoftPress(e));
-            input.addEventListener('blur', (e) => this.removeSoftPress(e));
-        });
+        this.passwordInput.addEventListener('focus', (e) => this.addSoftPress(e));
+        this.passwordInput.addEventListener('blur', (e) => this.removeSoftPress(e));
     }
     
     setupPasswordToggle() {
         this.passwordToggle.addEventListener('click', () => {
-            const type = this.passwordInput.type === 'password' ? 'text' : 'password';
-            this.passwordInput.type = type;
+            const toggleIcon = this.passwordToggle.querySelector('.toggle-icon');
             
-            this.passwordToggle.classList.toggle('show-password', type === 'text');
+            if (this.passwordInput.type === 'password') {
+                this.passwordInput.type = 'text';
+                // Change to eye-slash icon (password visible)
+                toggleIcon.setAttribute('viewBox', '0 0 24 24');
+                toggleIcon.innerHTML = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
+            } else {
+                this.passwordInput.type = 'password';
+                // Change to eye icon (password hidden)
+                toggleIcon.setAttribute('viewBox', '0 0 24 24');
+                toggleIcon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                `;
+            }
             
             // Add soft click animation
             this.animateSoftPress(this.passwordToggle);
         });
     }
     
-    setupSocialButtons() {
-        this.socialButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                this.animateSoftPress(button);
-                
-                // Determine which social platform based on SVG content
-                const svgPath = button.querySelector('svg path').getAttribute('d');
-                let provider = 'Social';
-                if (svgPath.includes('22.56')) provider = 'Google';
-                else if (svgPath.includes('github')) provider = 'GitHub';
-                else if (svgPath.includes('23.953')) provider = 'Twitter';
-                
-                this.handleSocialLogin(provider, button);
-            });
-        });
-    }
-    
     setupNeumorphicEffects() {
         // Add hover effects to all neumorphic elements
-        const neuElements = document.querySelectorAll('.neu-icon, .neu-checkbox, .neu-social');
+        const neuElements = document.querySelectorAll('.neu-icon');
         neuElements.forEach(element => {
             element.addEventListener('mouseenter', () => {
                 element.style.transform = 'scale(1.05)';
@@ -119,24 +110,6 @@ class NeumorphismLoginForm {
         }, 150);
     }
     
-    validateEmail() {
-        const email = this.emailInput.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        if (!email) {
-            this.showError('email', 'Email is required');
-            return false;
-        }
-        
-        if (!emailRegex.test(email)) {
-            this.showError('email', 'Please enter a valid email');
-            return false;
-        }
-        
-        this.clearError('email');
-        return true;
-    }
-    
     validatePassword() {
         const password = this.passwordInput.value;
         
@@ -184,10 +157,9 @@ class NeumorphismLoginForm {
     async handleSubmit(e) {
         e.preventDefault();
         
-        const isEmailValid = this.validateEmail();
         const isPasswordValid = this.validatePassword();
         
-        if (!isEmailValid || !isPasswordValid) {
+        if (!isPasswordValid) {
             this.animateSoftPress(this.submitButton);
             return;
         }
@@ -195,46 +167,21 @@ class NeumorphismLoginForm {
         this.setLoading(true);
         
         try {
-            // Simulate soft authentication
+            // Simulate password strength check
             await new Promise(resolve => setTimeout(resolve, 2000));
             
             // Show neumorphic success
             this.showNeumorphicSuccess();
         } catch (error) {
-            this.showError('password', 'Login failed. Please try again.');
+            this.showError('password', 'Check failed. Please try again.');
         } finally {
             this.setLoading(false);
-        }
-    }
-    
-    async handleSocialLogin(provider, button) {
-        console.log(`Initiating ${provider} login...`);
-        
-        // Add loading state to button
-        button.style.pointerEvents = 'none';
-        button.style.opacity = '0.7';
-        
-        try {
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            console.log(`Redirecting to ${provider} authentication...`);
-            // window.location.href = `/auth/${provider.toLowerCase()}`;
-        } catch (error) {
-            console.error(`${provider} authentication failed: ${error.message}`);
-        } finally {
-            button.style.pointerEvents = 'auto';
-            button.style.opacity = '1';
         }
     }
     
     setLoading(loading) {
         this.submitButton.classList.toggle('loading', loading);
         this.submitButton.disabled = loading;
-        
-        // Disable social buttons during login
-        this.socialButtons.forEach(button => {
-            button.style.pointerEvents = loading ? 'none' : 'auto';
-            button.style.opacity = loading ? '0.6' : '1';
-        });
     }
     
     showNeumorphicSuccess() {
@@ -244,8 +191,6 @@ class NeumorphismLoginForm {
         
         setTimeout(() => {
             this.form.style.display = 'none';
-            document.querySelector('.social-login').style.display = 'none';
-            document.querySelector('.signup-link').style.display = 'none';
             
             // Show success with soft animation
             this.successMessage.classList.add('show');
@@ -258,8 +203,7 @@ class NeumorphismLoginForm {
         
         // Simulate redirect
         setTimeout(() => {
-            console.log('Redirecting to dashboard...');
-            // window.location.href = '/dashboard';
+            console.log('Password strength checked successfully!');
         }, 2500);
     }
 }
