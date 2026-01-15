@@ -212,7 +212,27 @@ body {
 .toggle-icon {
     width: 20px;
     height: 20px;
-    flex-shrink: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease;
+}
+
+.eye-open {
+    opacity: 1;
+}
+
+.eye-closed {
+    opacity: 0;
+}
+
+.neu-toggle.show-password .eye-open {
+    opacity: 0;
+}
+
+.neu-toggle.show-password .eye-closed {
+    opacity: 1;
 }
 
 .toggle-icon path,
