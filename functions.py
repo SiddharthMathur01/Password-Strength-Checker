@@ -80,7 +80,7 @@ def password_feedback(password: str):
 
     if length < 8:
         return "Password is too short (less then 8 characters)"
-    elif f["has_dictionary"]:
+    elif f["has_dictionary_word"]:
         return "Password contains common or dictionary words"
     elif f["has_sequence"]:
         return "Password contains predictable sequences like '123' or 'abc'"
@@ -99,3 +99,5 @@ def password_feedback(password: str):
     elif length >= 12 and f["entropy"] >= 3.5:
         return "Strong password,Consider using a password manager"
 
+    else:
+        return "Moderate password strength. Consider increasing length or complexity."

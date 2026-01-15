@@ -373,6 +373,11 @@ body {
     margin-bottom: 20px;
 }
 
+.success-message .neu-icon svg {
+    width: 50px;
+    height: 50px;
+}
+
 .success-message h3 {
     color: #3d4468;
     font-size: 1.5rem;

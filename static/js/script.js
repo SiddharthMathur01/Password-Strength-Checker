@@ -104,12 +104,7 @@ class NeumorphismLoginForm {
             this.showError('password', 'Password is required');
             return false;
         }
-        
-        if (password.length < 6) {
-            this.showError('password', 'Password must be at least 6 characters');
-            return false;
-        }
-        
+          
         this.clearError('password');
         return true;
     }
@@ -175,7 +170,7 @@ class NeumorphismLoginForm {
             }
             
             // Step 3: Display result in existing success message element
-            // result contains: prediction_class (0=Weak, 1=Medium, 2=Strong), strength, confidence
+            // result contains: prediction_class (0=Very Weak, 1=Weak, 2=Medium, 3=Strong, 4=Very Strong), strength, confidence
             this.showPasswordStrengthResult(result);
             
         } catch (error) {
@@ -194,9 +189,11 @@ class NeumorphismLoginForm {
     showPasswordStrengthResult(result) {
         // Map prediction class to colors and icons
         const strengthMap = {
-            0: { label: 'Weak', color: '#ff3b5c', icon: 'warning' },
-            1: { label: 'Medium', color: '#ffa726', icon: 'shield' },
-            2: { label: 'Strong', color: '#00c896', icon: 'check' }
+            0: { label: 'Very Weak', color: '#d32f2f', icon: 'critical' },
+            1: { label: 'Weak', color: '#ff3b5c', icon: 'warning' },
+            2: { label: 'Medium', color: '#ffa726', icon: 'shield' },
+            3: { label: 'Strong', color: '#00c896', icon: 'good' },
+            4: { label: 'Very Strong', color: '#00a850', icon: 'excellent' }
         };
         
         const predictionClass = result.prediction_class;
@@ -209,15 +206,25 @@ class NeumorphismLoginForm {
         
         // Hide the "Please Enter password to continue" text
         const headerText = document.querySelector('.login-header p');
+        const upperLogo = document.querySelector('.login-header .neu-icon');
+        
         if (headerText) {
             headerText.style.opacity = '0';
             headerText.style.transform = 'translateY(-10px)';
+        }
+        
+        if (upperLogo) {
+            upperLogo.style.opacity = '0';
+            upperLogo.style.transform = 'scale(0.8)';
         }
         
         setTimeout(() => {
             this.form.style.display = 'none';
             if (headerText) {
                 headerText.style.display = 'none';
+            }
+            if (upperLogo) {
+                upperLogo.style.display = 'none';
             }
             
             // Step 4: Update success message with strength result and themed icon
@@ -235,7 +242,14 @@ class NeumorphismLoginForm {
             iconSvg.setAttribute('stroke-linecap', 'round');
             iconSvg.setAttribute('stroke-linejoin', 'round');
             
-            if (strength.icon === 'warning') {
+            if (strength.icon === 'critical') {
+                // Critical shield for very weak passwords
+                iconSvg.innerHTML = `
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <line x1="9" y1="10" x2="15" y2="16"/>
+                    <line x1="15" y1="10" x2="9" y2="16"/>
+                `;
+            } else if (strength.icon === 'warning') {
                 // Warning shield for weak passwords
                 iconSvg.innerHTML = `
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -249,18 +263,25 @@ class NeumorphismLoginForm {
                     <line x1="12" y1="8" x2="12" y2="12"/>
                     <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
                 `;
-            } else {
+            } else if (strength.icon === 'good') {
                 // Shield with checkmark for strong passwords
                 iconSvg.innerHTML = `
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     <polyline points="9 11 12 14 16 10"/>
+                `;
+            } else {
+                // Shield with double checkmark for very strong passwords
+                iconSvg.innerHTML = `
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <polyline points="8 12 11 15 16 9"/>
                 `;
             }
             
             // Update text content with detailed results
             successTitle.textContent = `${strength.label} Password!`;
             successTitle.style.color = strength.color;
-            successText.textContent = `Your password strength is ${result.strength.toLowerCase()} (${confidencePercent}% confidence).`;
+            // Display feedback instead of confidence percentage
+            successText.textContent = result.feedback || `Your password strength is ${result.strength.toLowerCase()}.`;
             
             // Show success message with animation
             this.successMessage.classList.add('show');
