@@ -8,6 +8,8 @@ model = gbm.Booster(model_file=r"CyberSecurity\Password-Strength-Checker\modle\p
 
 words= {"password", "admin", "welcome", "login", "user","qwerty", "abc", "letmein", "iloveyou", "monkey","dragon", "football", "india", "love", "boss","google", "facebook", "123", "1234", "12345","123456"}
 leet= str.maketrans({"0": "o","1": "i","3": "e","4": "a","5": "s","7": "t","@": "a","$": "s"})
+confi = {0: 0.70,1: 0.70,2: 0.60,3: 0.80,4: 0.90}
+
 
 def entropy(password: str) -> float:
     if not password:
@@ -59,4 +61,41 @@ def predict_password(password: str):
     probs = model.predict(X)[0]  
     pred_class = int(np.argmax(probs))
     confidence = float(np.max(probs))
-    return pred_class, confidence, probs
+    feedback = password_feedback(password)
+
+    if confidence < confi[pred_class]:
+        pred_class = max(0, pred_class - 1)
+        reason = "Low confidence prediction"
+    else:
+        reason = "High confidence prediction"
+
+    return pred_class, confidence, probs, reason, feedback
+
+
+
+def password_feedback(password: str):
+    password = password if isinstance(password, str) else ""
+    f = features(password)
+    length = len(password)
+
+    if length < 8:
+        return "Password is too short (less then 8 characters)"
+    elif f["has_dictionary"]:
+        return "Password contains common or dictionary words"
+    elif f["has_sequence"]:
+        return "Password contains predictable sequences like '123' or 'abc'"
+    elif f["has_repeat"]:
+        return "Password contains repeated characters"
+    elif f["upper_count"] == 0:
+        return "Add uppercase letters (A–Z)"
+    elif f["lower_count"] == 0:
+        return "Add lowercase letters (a–z)"
+    elif f["digit_count"] == 0:
+        return "Add numbers (0–9)"
+    elif f["special_count"] == 0:
+        return "Add special characters (!, @, #, etc.)"
+    elif f["entropy"] < 2.5:
+        return "Make the password more random and less predictable"
+    elif length >= 12 and f["entropy"] >= 3.5:
+        return "Strong password,Consider using a password manager"
+
