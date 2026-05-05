@@ -3,8 +3,11 @@ import numpy as np
 import lightgbm as gbm
 import re
 import math
+import os
 
-model = gbm.Booster(model_file="model/password_strength_model.txt")
+# Use absolute path for model to work in deployment
+model_path = os.path.join(os.path.dirname(__file__), "model", "password_strength_model.txt")
+model = gbm.Booster(model_file=model_path)
 
 words= {"password", "admin", "welcome", "login", "user","qwerty", "abc", "letmein", "iloveyou", "monkey","dragon", "football", "india", "love", "boss","google", "facebook", "123", "1234", "12345","123456"}
 leet= str.maketrans({"0": "o","1": "i","3": "e","4": "a","5": "s","7": "t","@": "a","$": "s"})
@@ -59,8 +62,6 @@ def passwrd_vector(password):
 def predict_password(password: str):
     X = np.array([passwrd_vector(password)])
     probs = model.predict(X)[0]  
-    if len(probs.shape) > 1:
-        probs = probs[0]
     pred_class = int(np.argmax(probs))
     confidence = float(np.max(probs))
     feedback = password_feedback(password)

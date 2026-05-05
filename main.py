@@ -48,7 +48,9 @@ def check_strength():
         }), 200
         
     except Exception as e:
-        print("Error during password strength check:", e)
+        print(f"Error during password strength check: {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'success': False,
             'error': 'An error occurred during password strength check'
