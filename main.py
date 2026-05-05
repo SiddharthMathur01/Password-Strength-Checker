@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from functions import predict_password
+import os
 
 
 app = Flask(__name__)
@@ -62,4 +63,4 @@ def strength():
 
 if __name__=='__main__':
     print("\nStarting server on http://127.0.0.1:5000")
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
