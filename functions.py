@@ -4,7 +4,7 @@ import lightgbm as gbm
 import re
 import math
 
-modle = gbm.Booster(modle_file="modle/password_strength_model.txt")
+model = gbm.Booster(model_file="model/password_strength_model.txt")
 
 words= {"password", "admin", "welcome", "login", "user","qwerty", "abc", "letmein", "iloveyou", "monkey","dragon", "football", "india", "love", "boss","google", "facebook", "123", "1234", "12345","123456"}
 leet= str.maketrans({"0": "o","1": "i","3": "e","4": "a","5": "s","7": "t","@": "a","$": "s"})
