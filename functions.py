@@ -59,6 +59,8 @@ def passwrd_vector(password):
 def predict_password(password: str):
     X = np.array([passwrd_vector(password)])
     probs = model.predict(X)[0]  
+    if len(probs.shape) > 1:
+        probs = probs[0]
     pred_class = int(np.argmax(probs))
     confidence = float(np.max(probs))
     feedback = password_feedback(password)
